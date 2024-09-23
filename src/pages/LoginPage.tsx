@@ -24,9 +24,11 @@ const LoginPage: React.FC = () => {
             const data = await response.json();
 
             if (response.ok) {
+                console.log(data)
                 setUser({
                     email: data.email,
-                    token: data.token
+                    access_token: data.access_token,
+                    refresh_token: data.refresh_token
                 });
                 navigate('/');
             } else {

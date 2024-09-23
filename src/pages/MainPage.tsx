@@ -19,7 +19,7 @@ const MainPage: React.FC = () => {
                 try {
                     const response = await fetch('http://localhost:3001/todos', {
                         headers: {
-                            Authorization: `Bearer ${user.token}`,  // JWT 토큰으로 인증
+                            Authorization: `Bearer ${user.access_token}`,  // JWT 토큰으로 인증
                         },
                     });
 
@@ -28,7 +28,7 @@ const MainPage: React.FC = () => {
                     }
 
                     const data = await response.json();
-                    addTodo(data);  // 상태 업데이트
+                    addTodo(data)
                 } catch (error) {
                     console.error('할일 데이터를 가져오는 중 오류 발생:', error);
                 }
