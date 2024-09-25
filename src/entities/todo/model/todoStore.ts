@@ -1,10 +1,16 @@
 import { create } from 'zustand'
 
-interface Todo {
+export interface Todo {
     id: number;
     title: string;
-    description: string;
+    description?: string;
     completed: boolean;
+    priority?: string;        // 우선순위
+    deadline?: string | null; // 기한
+    duration?: string;        // 소요 시간
+    assignedTo?: string;      // 담당자
+    tags?: string[];          // 태그
+    createdAt?: string;       // 생성일
 }
 
 interface TodoStore {

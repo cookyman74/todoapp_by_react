@@ -49,16 +49,6 @@ const MainPage: React.FC = () => {
         navigate('/create-todo');
     };
 
-    // 로그인 페이지로 이동
-    const handleLogin = () => {
-        navigate('/login');
-    };
-
-    // 회원가입 페이지로 이동
-    const handleSignUp = () => {
-        navigate('/signup');
-    };
-
     const handleStatusTodo = async (todoId: number, isCompleted: boolean) => {
         try {
             const response = await fetch('http://localhost:3001/todos/'+todoId, {
@@ -79,6 +69,10 @@ const MainPage: React.FC = () => {
             console.error("할일 상태 업데이트 중 오류 발생: ", error);
         }
 
+    };
+
+    const formatDate = (dateString: string | undefined): string => {
+        return dateString ? new Date(dateString).toLocaleDateString() : '설정되지 않음';
     };
 
     return (
@@ -112,7 +106,15 @@ const MainPage: React.FC = () => {
                             <ListItem key={todo.id}>
                                 <ListItemText
                                     primary={todo.title}
-                                    secondary={todo.description}
+                                    secondary={
+                                        <>
+                                            <div>설명: {todo.description}</div>
+                                            <div>생성일: {todo.deadline ? formatDate(todo.createdAt) : ''}</div>  {/* 생성일 표시 */}
+                                            <div>기한: {todo.deadline ? formatDate(todo.deadline) : '설정되지 않음'}</div>  {/* 기한 표시 */}
+                                            <div>담당자: {todo.assignedTo ? todo.assignedTo : '할당되지 않음'}</div>  {/* 담당자 표시 */}
+                                            <div>태그: {todo.tags?.join(', ') || '태그 없음'}</div>  {/* 태그 표시 */}
+                                        </>
+                                    }
                                     style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}
                                 />
                                 <Button
