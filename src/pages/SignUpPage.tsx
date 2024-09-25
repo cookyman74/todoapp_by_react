@@ -8,7 +8,6 @@ const SignUpPage: React.FC = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const setUser = useUserStore((state) => state.setUser);
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {

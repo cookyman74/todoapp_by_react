@@ -59,6 +59,28 @@ const MainPage: React.FC = () => {
         navigate('/signup');
     };
 
+    const handleStatusTodo = async (todoId: number, isCompleted: boolean) => {
+        try {
+            const response = await fetch('http://localhost:3001/todos/'+todoId, {
+                method: "PATCH",
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${user?.access_token}`,
+                },
+                body: JSON.stringify({completed: isCompleted})
+            });
+
+            if (!response.ok) {
+                throw new Error("할일 상태 업데이트에 실패했습니다.")
+            }
+
+            toggleTodo(todoId);
+        } catch (error) {
+            console.error("할일 상태 업데이트 중 오류 발생: ", error);
+        }
+
+    };
+
     return (
         <Container maxWidth="md" style={{ textAlign: 'center', marginTop: '50px' }}>
             <Typography variant="h4" gutterBottom>
@@ -96,7 +118,7 @@ const MainPage: React.FC = () => {
                                 <Button
                                     variant="contained"
                                     color="primary"
-                                    onClick={() => toggleTodo(todo.id)}
+                                    onClick={() => handleStatusTodo(todo.id, !todo.completed)}
                                     style={{ marginRight: '10px' }}
                                 >
                                     {todo.completed ? '미완료' : '완료'}

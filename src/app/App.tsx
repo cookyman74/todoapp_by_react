@@ -5,6 +5,7 @@ import MainPage from '../pages/MainPage';
 // import TodoCreationPage from '../pages/todoCreation/TodoCreationPage';
 import LoginPage from '../pages/LoginPage';
 import SignUpPage from '../pages/SignUpPage';
+import CreateTodoPage from "../pages/CreateTodoPage";
 
 const App: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ const App: React.FC = () => {
         <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/create-todo" element={<CreateTodoPage />} />
             <Route path="/" element={<MainPage />} />
         </Routes>
       </Router>
