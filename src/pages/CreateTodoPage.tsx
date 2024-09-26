@@ -1,13 +1,23 @@
 // src/pages/CreateTodoPage.tsx
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Container, TextField, Typography } from '@mui/material';
+import { Button, Container, TextField, Typography, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import useTodoStore from '../entities/todo/model/todoStore';
 import useUserStore from '../entities/user/model/userStore';  // Zustand에서 user 상태 가져오기
+
+interface User {
+    id: number;
+    name: string;
+}
 
 const CreateTodoPage: React.FC = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
+    const [priority, setPriority] = useState('low');  // 우선순위
+    const [deadline, setDeadline] = useState('');  // 기한
+    const [assignedTo, setAssignedTo] = useState<number | null>(null);  // 담당자
+    const [userList, setUserList] = useState<User []>([]);
+    const [tags, setTags] = useState('');  // 태그
     const navigate = useNavigate();
     const { addTodo } = useTodoStore();
     const { user, setUser } = useUserStore();  // Zustand에서 user 상태를 가져옴
@@ -19,6 +29,33 @@ const CreateTodoPage: React.FC = () => {
         }
         return true;
     };
+
+    //  사용자 목록을 서버에서  가져오는 함수
+    const fetchUsers = async () => {
+        if (!user || !user.access_token) {
+            alert('사용자 인증 정보가 없습니다.');
+            return null;
+        }
+
+        try {
+            const response = await fetch('http://localhost:3001/users', {
+                headers: {
+                    Authorization: `Bearer ${user.access_token}`,
+                },
+            })
+
+            const data = await response.json();
+            console.log("hhhhhh", data)
+            setUserList(data);
+        } catch (error) {
+            console.error("사용자 목록을 가져오는 중 오류 발생: ", error)
+        }
+    };
+
+    // 의존성 배열 없이 한 번만 fetchUsers 실행
+    useEffect(() => {
+        fetchUsers(); // 컴포넌트가 로드될 때 사용자 목록 가져오기
+    }, []);
 
     const fetchCreateTodo = async (accessToken: string | undefined): Promise<Response | null> => {
         if (!user || !user.access_token) {
@@ -53,6 +90,9 @@ const CreateTodoPage: React.FC = () => {
             }
         };
 
+        const deadlineISO = deadline ? new Date(deadline).toISOString() : null;
+        const tagsArray = tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
+
         try {
             const response = await fetch('http://localhost:3001/todos', {
                 method: 'POST',
@@ -63,6 +103,10 @@ const CreateTodoPage: React.FC = () => {
                 body: JSON.stringify({
                     title,
                     description,
+                    priority,
+                    deadline: deadlineISO,
+                    assignedTo,
+                    tags: tagsArray,
                     completed: false,
                 }),
             });
@@ -121,6 +165,50 @@ const CreateTodoPage: React.FC = () => {
                 label="설명"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
+
+            <FormControl fullWidth margin="normal">
+                <InputLabel>우선순위</InputLabel>
+                <Select
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value as string)}
+                >
+                    <MenuItem value={1}>낮음</MenuItem>
+                    <MenuItem value={3}>중간</MenuItem>
+                    <MenuItem value={5}>높음</MenuItem>
+                </Select>
+            </FormControl>
+
+            <TextField
+                label="기한"
+                type="date"
+                value={deadline}
+                onChange={(e) => setDeadline(e.target.value)}
+                fullWidth
+                margin="normal"
+            />
+
+            {/* 담당자 선택을 위한 드롭다운 */}
+            <FormControl fullWidth margin="normal">
+                <InputLabel>담당자</InputLabel>
+                <Select
+                    value={assignedTo ?? ''}
+                    onChange={(e) => setAssignedTo(Number(e.target.value))}
+                >
+                    {userList.map((user) => (
+                        <MenuItem key={user.id} value={user.id}>
+                            {user.name}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
+
+            <TextField
+                label="태그 (쉼표로 구분)"
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
                 fullWidth
                 margin="normal"
             />
