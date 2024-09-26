@@ -148,6 +148,28 @@ const MainPage: React.FC = () => {
                     ))}
                 </Grid>
 
+                    {/* 할일 등록 버튼과 로그아웃 버튼을 나란히 배치 */}
+                    <Grid container spacing={2} justifyContent="center" style={{marginTop: '20px'}}>
+                        <Grid item>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={handleAddTodo}
+                            >
+                                할일 등록
+                            </Button>
+                        </Grid>
+                        <Grid item>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={handleLogout}
+                            >
+                                로그아웃
+                            </Button>
+                        </Grid>
+                    </Grid>
+
                 <div style={{marginTop: '40px'}}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Typography>
@@ -210,28 +232,6 @@ const MainPage: React.FC = () => {
                             ))}
                         </Grid>
                     </Collapse>
-
-                    {/* 할일 등록 버튼과 로그아웃 버튼을 나란히 배치 */}
-                    <Grid container spacing={2} justifyContent="center" style={{marginTop: '20px'}}>
-                        <Grid item>
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleAddTodo}
-                            >
-                                할일 등록
-                            </Button>
-                        </Grid>
-                        <Grid item>
-                            <Button
-                                variant="outlined"
-                                color="secondary"
-                                onClick={handleLogout}
-                            >
-                                로그아웃
-                            </Button>
-                        </Grid>
-                    </Grid>
                 </div>
                 </>
                 )}
